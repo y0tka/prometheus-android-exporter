@@ -70,7 +70,10 @@ class PrometheusServer {
         }
 
         private fun configureServer(config: PrometheusServerConfig): ApplicationEngine {
-            return embeddedServer(CIO, port = config.port) {
+            return embeddedServer(CIO, port = config.port, configure = {
+                    shutdownGracePeriod = 0
+                    shutdownTimeout = 0
+            }) {
                 install(StatusPages) {
                     status(HttpStatusCode.NotFound) { call, status ->
                         call.respondText(text = notFoundPage(), status = status)
