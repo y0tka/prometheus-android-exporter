@@ -6,18 +6,30 @@ on:
       - '*'
 
 jobs:
-  Gradle:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-    - name: setup jdk
-      uses: actions/setup-java@v1
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
       with:
-        java-version: 17
-    - name: Build Release APK
-      run: cd client && chmod +x ./gradlew && ./gradlew build
-    - name: Releasing using Hub
-      uses: sangatdesai/release-apk@main
-      env:
-       APP_FOLDER: app
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android environment
+      uses: android-actions/setup-android@v3
+
+    - name: Build APK
+      run: |
+        cd ${{ github.workspace }}/client
+        chmod 755 gradlew
+        ./gradlew assembleRelease
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk
+        path: ${{ github.workspace }}/client/app/build/outputs/apk/release/
