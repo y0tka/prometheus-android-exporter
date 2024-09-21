@@ -15,10 +15,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Make Gradle executable
-      run: chmod +x ./gradlew
     - name: Build Release APK
-      run: cd client && ./gradlew build
+      run: cd client && chmod +x ./gradlew && ./gradlew build
     - name: Releasing using Hub
       uses: sangatdesai/release-apk@main
       env:
